@@ -15,6 +15,11 @@ class CircleShape(pygame.sprite.Sprite):
         self.velocity = pygame.Vector2(0, 0)
         self.radius = radius
 
+    def collision_check(self, target):
+        dist = pygame.math.Vector2.distance_to(target.position,self.position)
+        min_dist = self.radius + target.radius
+        return dist <= min_dist
+
     def draw(self, screen):
         # sub-classes must override
         pass
