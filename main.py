@@ -18,6 +18,9 @@ from asteroid import Asteroid
 # import the Asteroidfield class
 from asteroidfield import AsteroidField
 
+# import the Bullet class
+from bullet import Bullet 
+
 def main():
     print("Starting asteroids!")
     print(f"Screen width: {SCREEN_WIDTH}")
@@ -39,6 +42,7 @@ def main():
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
+    bullets = pygame.sprite.Group()
 
     # add all instances of player to the appropriate groups
     Player.containers = (updatable, drawable)
@@ -49,8 +53,11 @@ def main():
     # add the Asteroidfield class to the updatable group
     AsteroidField.containers = (updatable)
 
+    # add the Bullet class to updatable and drawable
+    Bullet.containers = (updatable, drawable)
+
     # instantiate a Player object
-    player = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+    player = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, bullets, updatable, drawable)
 
     # instantiate the Asteroidfield
     asteroidfield = AsteroidField()
@@ -64,7 +71,7 @@ def main():
         # Calculate the time delta (dt) in seconds
         #dt = clock.tick(60) / 1000  # 60 FPS
 
-        # make an escaoe from the game loop
+        # make an escape from the game loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return        
@@ -85,9 +92,19 @@ def main():
 
         # check for collisions
         for asteroid in asteroids:
+
+            # check for ship / asteroid collisions
             if CircleShape.collision_check(player, asteroid):
                 print("Game over!") 
-                running = False    
+                #  running = False  
+
+            # check for bullet / asteroid collisions
+            for bullet in bullets:
+                #print(f"Checking bullet {bullet} with asteroid {asteroid}")
+                if bullet.collision_check(asteroid):
+                    #print("asteroid has been shot")
+                    bullet.kill()  # Remove the bullet from its group
+                    asteroid.kill()  # Remove the asteroid from its group
 
         # Control the frame rate (e.g., 60 FPS)
         clock.tick(60)
