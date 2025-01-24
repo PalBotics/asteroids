@@ -60,7 +60,8 @@ def main():
     player = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, bullets, updatable, drawable)
 
     # instantiate the Asteroidfield
-    asteroidfield = AsteroidField()
+    asteroidfield = AsteroidField(updatable, drawable, asteroids)
+    updatable.add(asteroidfield)
 
     # set a flag to end the game loop
     running = True
@@ -96,7 +97,7 @@ def main():
             # check for ship / asteroid collisions
             if CircleShape.collision_check(player, asteroid):
                 print("Game over!") 
-                #  running = False  
+                running = False  
 
             # check for bullet / asteroid collisions
             for bullet in bullets:
@@ -104,7 +105,7 @@ def main():
                 if bullet.collision_check(asteroid):
                     #print("asteroid has been shot")
                     bullet.kill()  # Remove the bullet from its group
-                    asteroid.kill()  # Remove the asteroid from its group
+                    asteroid.split()  # Split the asteroid from its group
 
         # Control the frame rate (e.g., 60 FPS)
         clock.tick(60)
